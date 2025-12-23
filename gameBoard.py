@@ -92,7 +92,7 @@ class GameBoard():
     def restart(self):
         for row in range(self.rows):
             for column in range(self.columns):
-                self.board[row][column] = 0
+                self.board[row][column] = 0 #resets every cell to 0 (empty) to restart the game
 
     def perfectClear(self): #returns true if the whole board is clear, cell value 0
         for row in range(self.rows):
@@ -101,3 +101,51 @@ class GameBoard():
                     return False
         #exit the loop if an occupied cell is found
         return True
+
+    #the following functions relate to the logic of opponent heuristic calculation
+
+    def aggregateHeight(self):
+        height = 0
+        for column in range(self.columns):
+            for row in range(self.rows):
+                if self.board[row][column] != 0: #for each column, find the first row (start from top) where the cell is filled
+                    height += self.rows-row
+                    break
+        return height #height of column calculated and returned once each column has been checked
+
+    def holes(self):
+        holesFound = 0
+        for column in range(self.columns):
+            cellFilled = False #resets it to False for each column
+            for row in range(self.rows):
+                if self.board[row][column] != 0:
+                    cellFilled = True #detects a filled cell
+                #if the next row checked is 0 while cellFilled has been set to True, this means there is a hole
+                elif self.board[row][column] == 0 and cellFilled == True:
+                    holesFound += 1
+        return holesFound
+
+    def bumpiness(self):
+        heights = [] #will input all column heights into an array for easy comparison
+        for column in range(self.columns):
+            height = 0 #restarts height to 0 each time a new column is examined
+            for row in range(self.rows):
+                if self.board[row][column] != 0: #for each column, find the first row (start from top) where the cell is filled
+                    height += self.rows-row
+                    break #breaks out of inner for loop to restart height to 0
+            heights.append(height)
+
+        bumpiness = 0
+        for i in range(len(heights)-1):
+            #finds the absolute difference between each consecutive pair of heights in the array
+            bumpiness += abs(heights[i]-heights[i+1])
+        return bumpiness
+
+
+    def fullLines(self):
+        full = 0  # keeps track of how many rows have been filled - this variable will be called to clear the right amount
+        # of lines
+        for row in range(self.rows - 1, -1, -1):  # starts with last row, in steps of -1 to first row
+            if self.lineFull(row) == True:
+                self.clear(row)
+                full = full + 1

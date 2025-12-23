@@ -9,10 +9,19 @@ from pieces import *
 #Importing heapq for the greedy best-first implementation
 import heapq
 
+simulated_board = GameBoard(650,80)
+
 class Opponent():
-    def __init__(self, board_state, heuristic):
+    def __init__(self, board_state):
         self.board_state = board_state
-        self.heuristic = heuristic
+
+    def heuristic(self):
+        return (
+            0.55 * simulated_board.aggregateHeight() +
+            0.45 * simulated_board.holes() +
+            0.35 * simulated_board.bumpiness() +
+            -0.95 * simulated_board.fullLines()
+        )
 
     def greedy_best_first_search(self, problem, heuristic):
         start_node = problem.initial_state #evaluating the initial problem state that the search will start from
