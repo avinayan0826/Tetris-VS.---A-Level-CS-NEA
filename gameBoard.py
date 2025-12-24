@@ -149,3 +149,10 @@ class GameBoard():
             if self.lineFull(row) == True:
                 self.clear(row)
                 full = full + 1
+
+    def simulatedBoard(self):
+        simulated_board = GameBoard(self.xboardOffset,self.yboardOffset)
+        for row in range(self.rows):
+            for column in range(self.columns):
+                simulated_board.board[row][column] = self.board[row][column]
+        return simulated_board
