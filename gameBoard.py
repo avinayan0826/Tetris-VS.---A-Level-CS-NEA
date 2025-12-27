@@ -112,7 +112,6 @@ class GameBoard():
                 simulated_board.board[row][column] = self.board[row][column]
         return simulated_board
 
-
 #the following 4 functions required for heuristic calculations
     def aggregateHeight(self):
         height = 0
@@ -158,4 +157,5 @@ class GameBoard():
         for row in range(self.rows - 1, -1, -1):  # starts with last row, in steps of -1 to first row
             if self.lineFull(row) == True:
                 full = full + 1
+        return full
 

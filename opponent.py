@@ -30,7 +30,17 @@ class Opponent():
                 return False #rejects move immediately if one tile is out of bounds
         return True #accepts as valid move
 
+    def dropPiece(self, piece):
+        simulated_board = self.board_state.simulatedBoard()
+        if self.isValid(piece) == True:
+            piece.offset(1,0) #drops the piece to the bottom
+        else:
+            piece.offset(-1,0) #stops when it is invalid
+        for piece in piece.getOccupiedCells():
+            self.board_state[piece.row][piece.column] = piece.shape
+        simulated_board.fullLines()
 
+    def generatePlacements(self):
 
     def greedy_best_first_search(self, problem, heuristic):
         start_node = problem.initial_state #evaluating the initial problem state that the search will start from
