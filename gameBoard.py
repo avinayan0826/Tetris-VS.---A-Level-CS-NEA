@@ -102,8 +102,18 @@ class GameBoard():
         #exit the loop if an occupied cell is found
         return True
 
-    #the following functions relate to the logic of opponent heuristic calculation
+#THE FOLLOWING FUNCTIONS ARE REQUIRED FOR THE OPPONENT LOGIC
 
+#creates the copy of the game board which the opponent simulates positions of pieces
+    def simulatedBoard(self):
+        simulated_board = GameBoard(self.xboardOffset,self.yboardOffset)
+        for row in range(self.rows):
+            for column in range(self.columns):
+                simulated_board.board[row][column] = self.board[row][column]
+        return simulated_board
+
+
+#the following 4 functions required for heuristic calculations
     def aggregateHeight(self):
         height = 0
         for column in range(self.columns):
@@ -147,12 +157,5 @@ class GameBoard():
         # of lines
         for row in range(self.rows - 1, -1, -1):  # starts with last row, in steps of -1 to first row
             if self.lineFull(row) == True:
-                self.clear(row)
                 full = full + 1
 
-    def simulatedBoard(self):
-        simulated_board = GameBoard(self.xboardOffset,self.yboardOffset)
-        for row in range(self.rows):
-            for column in range(self.columns):
-                simulated_board.board[row][column] = self.board[row][column]
-        return simulated_board

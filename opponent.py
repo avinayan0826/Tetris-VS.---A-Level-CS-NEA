@@ -9,19 +9,28 @@ from pieces import *
 #Importing heapq for the greedy best-first implementation
 import heapq
 
-simulated_board = GameBoard(650,80)
 
 class Opponent():
     def __init__(self, board_state):
         self.board_state = board_state
 
-    def heuristic(self):
+    def heuristic(self, simulated_board):
         return (
             0.55 * simulated_board.aggregateHeight() +
             0.45 * simulated_board.holes() +
             0.35 * simulated_board.bumpiness() +
             -0.95 * simulated_board.fullLines()
         )
+
+    def isValid(self,piece): #checks that a move is valid, using the logic from gameboard functions
+        simulated_board = self.board_state.simulatedBoard() #using the simulated board when simulating moves
+        for piece in piece.getOccupiedCells(): #checks each individual tile in the tetrimino
+            if (simulated_board.checkBoundary(piece.row, piece.column) == False and
+                simulated_board.checkOccupiedCells(piece.row, piece.column) == False):
+                return False #rejects move immediately if one tile is out of bounds
+        return True #accepts as valid move
+
+
 
     def greedy_best_first_search(self, problem, heuristic):
         start_node = problem.initial_state #evaluating the initial problem state that the search will start from
