@@ -40,7 +40,26 @@ class Opponent():
             self.board_state[piece.row][piece.column] = piece.shape
         simulated_board.fullLines()
 
-    def generatePlacements(self):
+#this function is responsible for generating all the possible placements for a piece
+    def generatePlacements(self, opponentBoard, piece):
+        #creating the array where valid board placements can easily be retrieved from
+        boardPlacements = []
+        #checking each column, with each rotation state in this nested for loop
+        for rotation in range(4):
+            sim_rotation = piece.simulatedBoard() #creates a simulated piece for each rotation on the simulated board
+            sim_rotation.rotation = rotation #will loop for each rotation state
+            for column in range(opponentBoard.columns):
+                simulated_board = opponentBoard.simulatedBoard() #creating a simulated version of the opponent board
+                simulated_piece = sim_rotation.simulatedBoard() #simulating the piece again, in order to correctly iterate
+                                                                #through each column without error
+                #for each column, these two lines ensure that the piece starts from the top of the board in the next column
+                simulated_piece.column = column
+                simulated_piece.row = 0
+                if simulated_board.isValid(simulated_piece) == True: #if the movement is valid...
+                    full_lines = simulated_board.dropPiece(simulated_piece) #drop the piece and return the amount of full lines
+                    #append all of these four factors into boardPlacements, which will then be examined as required by the GBFS algorithm
+                    boardPlacements.append((simulated_board,full_lines,column,rotation))
+        return boardPlacements
 
     def greedy_best_first_search(self, problem, heuristic):
         start_node = problem.initial_state #evaluating the initial problem state that the search will start from
