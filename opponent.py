@@ -61,32 +61,20 @@ class Opponent():
                     boardPlacements.append((simulated_board,full_lines,column,rotation))
         return boardPlacements
 
-    def greedy_best_first_search(self, problem, heuristic):
-        start_node = problem.initial_state #evaluating the initial problem state that the search will start from
-        if problem.is_goal_state(start_node):
-            return start_node #if the initial state evaluated satisfies the goal, return it
-
-        priority_queue = [] #creates an empty list that python will treat as a priority queue using heapq
-        #uses the heappush function to find the heuristic of the start_node, and place that heuristic into the priority queue
-        heapq.heappush(priority_queue, heuristic(start_node))
-        visited = set() #keeps track of states that have been visited, prevents the same state from being evaluated in an infinite loop
-
-        while priority_queue: #while the priority queue is not empty
-            current_node = heapq.heappop(priority_queue) #removes and returns the item with the lowest heuristic
-            visited.add(current_node) #add this current_node to the set of visited states
-
-            #this loop creates a list, with get_successor, of all possible next states. the loop goes through each possible state,
-            #and evaluates the heuristic. if the state has not been visited yet and is the 'goal' state, return that state,
-            #and push it into the priority queue
-            for successor in problem.get_successor(current_node):
-                if successor not in visited:
-                    if problem.is_goal_state(successor):
-                        return successor
-                    heapq.heappush(priority_queue, heuristic(successor))
-
-        return None #if the search concludes without finding a 'goal', return None
-
-
-
+    def GBFS_bestMove(self, opponentBoard, piece):
+        start_node = opponentBoard #the start node is the initial state of the opponent board passed in
+        bestHeuristic = 0 #set the initial value to 0, this will be replaced by the lowest heuristic as each move is evaluated
+        bestMove = None #set initially to None, this will be replaced by the best move as each move is evaluated,
+                        #and the lowest heuristic is found
+        #calls generatePlacements, to find all valid moves for the current board state and piece on the board
+        boardPlacements = self.generatePlacements(opponentBoard, piece)
+        #then unpacking each element of the boardPlacements array, to find the column, rotation state and the
+        #number of lines cleared from a specific move
+        for simulated_board, full_lines, column, rotation in boardPlacements:
+            heuristic = self.heuristic(simulated_board) #calculate the heuristic of the move
+            if heuristic < bestHeuristic:
+                bestHeuristic = heuristic #the lower the heuristic the better the move - gbfs looks for the lowest heuristic
+                bestMove = (column, rotation) #the move with the lowest heuristic is the best move out of all generated placements
+        return bestMove #return and play the best move
 
 
