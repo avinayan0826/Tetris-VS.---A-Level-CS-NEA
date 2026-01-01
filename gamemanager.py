@@ -3,16 +3,21 @@ import pygame.time
 from gameBoard import GameBoard
 from pieces import *
 from score import Score
+from opponent import Opponent
 import random
 
 class GameManager:
     def __init__(self):
+        #instances of GameBoard object, one for the user one for the opponent
         self.gameBoard = GameBoard(80,80)
         self.opponentBoard = GameBoard(650,80)
-        #instances of GameBoard object, one for the user one for the opponent
+        self.opponent = Opponent(self.opponentBoard)
         self.pieces = [I_Tet(),O_Tet(),T_Tet(),S_Tet(),Z_Tet(),J_Tet(),L_Tet()]
         self.currentPiece = self.genNewPiece()
         self.nextPiece = self.genNewPiece()
+        self.opponentPiece = self.genNewPiece()
+        self.opponentTargetCol = None
+        self.opponentTargetRot = None
         self.nextQ = [self.genNewPiece() for i in range(3)] #list of 3 pieces in 'next pieces' queue
         self.gameOver = False
         self.score = Score()
@@ -23,7 +28,7 @@ class GameManager:
         if len(self.pieces) == 0:
             self.pieces = [I_Tet(),O_Tet(),T_Tet(),S_Tet(),Z_Tet(),J_Tet(),L_Tet()]
         piece = random.choice(self.pieces)
-        self.pieces.remove(piece) # removes piece from list temporarily so it can't be called until the list is recreated
+        self.pieces.remove(piece) #removes piece from list temporarily so it can't be called until the list is recreated
         return piece
 
     def draw(self,screen): #draws the random tetrimino on the board
@@ -31,6 +36,7 @@ class GameManager:
         self.currentPiece.draw_tet(screen, self.gameBoard)
         self.drawNextQ(screen, x=400, y=350)
         self.opponentBoard.draw_board(screen)
+        self.opponentPiece.draw_tet(screen, self.opponentBoard)
 
     def drawNextQ(self, screen, x, y):
         for i, piece in enumerate(self.nextQ):
@@ -113,30 +119,40 @@ class GameManager:
         self.currentPiece = self.genNewPiece()
         self.nextPiece = self.genNewPiece()
 
-    # def addScore(self,numberCleared,rowsMoved):
-    #     if numberCleared == 1:
-    #         if isinstance(self.currentPiece,T_Tet):
-    #             self.score += 800
-    #         else:
-    #             self.score += 100
-    #     elif numberCleared == 2:
-    #         if isinstance(self.currentPiece,T_Tet):
-    #             self.score += 1200
-    #         else:
-    #             self.score += 300
-    #     elif numberCleared == 3:
-    #         if isinstance(self.currentPiece,T_Tet):
-    #             self.score += 1600
-    #         else:
-    #             self.score += 500
-    #     elif numberCleared == 4:
-    #         self.score += 800
-    #     else:
-    #         return
-    #     self.score += rowsMoved
+#specifically for opponent bot
+    def setOpponentMove(self):
+        bestMove = self.opponent.GBFS_bestMove(self.opponentBoard,self.opponentPiece)
+        if bestMove:
+            self.opponentTargetCol,self.opponentTargetRot = bestMove
+            self.opponentPiece.rotation = self.opponentTargetRot
 
+    def moveOpponent(self):
+        if self.opponentTargetCol != None:
+            if self.opponentPiece.x < self.opponentTargetCol:
+                self.opponentPiece.offset(0,1)
+            elif self.opponentPiece.x > self.opponentTargetCol:
+                self.opponentPiece.offset(0,-1)
+        self.opponentPiece.offset(1, 0)
+        if self.opponent.isValid(self.opponentPiece) == False:
+            self.opponentPiece.offset(-1,0)
+            self.lockOpPiece()
 
-
-
+    def lockOpPiece(self):
+        blocks = self.opponentPiece.getOccupiedCells()
+        for block in blocks:
+            self.gameBoard.board[block.row][block.column] = self.opponentPiece.shape  #storing the corresponding values of the tetrimino
+                                                                                     #into the grid
+        numberCleared = self.opponentBoard.clearAllFull()
+        self.score.lineClearScore(numberCleared, (
+            type(self.opponentPiece).__name__))  # checking the number of lines cleared, and whether it is a T piece
+        newSpeed = max(100, 700 - (
+                    (self.score.level - 1) * 50))  # for each level up, speed of automatic fall increases by 50ms
+        pygame.time.set_timer(self.AUTOMATIC_FALL,
+                              newSpeed)  # changes automatic fall to the new speed for each level up
+        if numberCleared > 0 and self.opponentBoard.perfectClear() == True:
+            self.score.perfectClearScore(numberCleared)
+        self.score.comboScore(numberCleared)  # checking for combo score
+        self.opponentPiece = self.genNewPiece()
+        self.setOpponentMove()
 
 

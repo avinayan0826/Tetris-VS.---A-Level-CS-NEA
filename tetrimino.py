@@ -53,6 +53,18 @@ class Tetrimino():
     def reverseRotate(self):
         self.rotation = (self.rotation - 1) % 4
 
+#for simulating a piece for the opponent
+    def simulatedPiece(self):
+        #building a simulated piece that copies the type of tetrimino, position on the board, rotation and its occupied cells
+        simulated_piece = type(self.shape)
+        simulated_piece.x = self.x
+        simulated_piece.y = self.y
+        simulated_piece.row_offset = self.row_offset
+        simulated_piece.column_offset = self.column_offset
+        simulated_piece.rotation = self.rotation
+        simulated_piece.occupied_cells = self.occupied_cells
+        return simulated_piece
+
 
 
 

@@ -54,6 +54,7 @@ while run: # setting up the while loop where the game logic will run
                 gamemanager.hardDrop()
         if event.type == AUTOMATIC_FALL and gamemanager.gameOver == False:
             gamemanager.softDrop()
+            gamemanager.moveOpponent()
 
     scoreValueSurface = titleFont.render(str(gamemanager.score.score),True,white)
     levelValueSurface = titleFont.render(str(gamemanager.score.level), True, white)
@@ -76,44 +77,3 @@ while run: # setting up the while loop where the game logic will run
 
 pygame.quit()
 sys.exit()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#
-# #load images the background
-# background_img = pygame.image.load('tetris_background.jpg').convert_alpha()
-#
-# #background_img = pygame.transform.scale(background_img,img_size)
-# #drawing the background
-# def draw_background():
-#     screen.blit(background_img, (0,0))
-#
-# run = True
-# while run:
-#     draw_background()
-#
-#     for event in pygame.event.get():
-#        if event.type == pygame.QUIT:
-#            run = False
-#
-#     pygame.display.update()
-# pygame.quit()

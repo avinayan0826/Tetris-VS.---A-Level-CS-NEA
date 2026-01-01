@@ -25,7 +25,7 @@ class Opponent():
     def isValid(self,piece): #checks that a move is valid, using the logic from gameboard functions
         simulated_board = self.board_state.simulatedBoard() #using the simulated board when simulating moves
         for piece in piece.getOccupiedCells(): #checks each individual tile in the tetrimino
-            if (simulated_board.checkBoundary(piece.row, piece.column) == False and
+            if (simulated_board.checkBoundary(piece.row, piece.column) == False or
                 simulated_board.checkOccupiedCells(piece.row, piece.column) == False):
                 return False #rejects move immediately if one tile is out of bounds
         return True #accepts as valid move
@@ -46,11 +46,11 @@ class Opponent():
         boardPlacements = []
         #checking each column, with each rotation state in this nested for loop
         for rotation in range(4):
-            sim_rotation = piece.simulatedBoard() #creates a simulated piece for each rotation on the simulated board
-            sim_rotation.rotation = rotation #will loop for each rotation state
+            copy_piece = piece.simulatedPiece() #creates a simulated piece for each rotation on the simulated board
+            copy_piece.rotation = rotation #will loop for each rotation state
             for column in range(opponentBoard.columns):
                 simulated_board = opponentBoard.simulatedBoard() #creating a simulated version of the opponent board
-                simulated_piece = sim_rotation.simulatedBoard() #simulating the piece again, in order to correctly iterate
+                simulated_piece = copy_piece.simulatedBoard() #simulating the piece again, in order to correctly iterate
                                                                 #through each column without error
                 #for each column, these two lines ensure that the piece starts from the top of the board in the next column
                 simulated_piece.column = column

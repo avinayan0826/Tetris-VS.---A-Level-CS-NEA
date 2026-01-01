@@ -143,7 +143,6 @@ class GameBoard():
                     height += self.rows-row
                     break #breaks out of inner for loop to restart height to 0
             heights.append(height)
-
         bumpiness = 0
         for i in range(len(heights)-1):
             #finds the absolute difference between each consecutive pair of heights in the array
