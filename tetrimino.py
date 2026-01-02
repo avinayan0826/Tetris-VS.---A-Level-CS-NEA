@@ -56,7 +56,7 @@ class Tetrimino():
 #for simulating a piece for the opponent
     def simulatedPiece(self):
         #building a simulated piece that copies the type of tetrimino, position on the board, rotation and its occupied cells
-        simulated_piece = type(self.shape)
+        simulated_piece = Tetrimino(self.shape)
         simulated_piece.x = self.x
         simulated_piece.y = self.y
         simulated_piece.row_offset = self.row_offset

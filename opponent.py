@@ -32,10 +32,9 @@ class Opponent():
 
     def dropPiece(self, piece):
         simulated_board = self.board_state.simulatedBoard()
-        if self.isValid(piece) == True:
-            piece.offset(1,0) #drops the piece to the bottom
-        else:
-            piece.offset(-1,0) #stops when it is invalid
+        while self.isValid(piece) == True:
+            piece.offset(1,0)
+        piece.offset(-1,0) #doesn't allow the piece to go beyond the board
         for piece in piece.getOccupiedCells():
             self.board_state[piece.row][piece.column] = piece.shape
         simulated_board.fullLines()
@@ -50,12 +49,12 @@ class Opponent():
             copy_piece.rotation = rotation #will loop for each rotation state
             for column in range(opponentBoard.columns):
                 simulated_board = opponentBoard.simulatedBoard() #creating a simulated version of the opponent board
-                simulated_piece = copy_piece.simulatedBoard() #simulating the piece again, in order to correctly iterate
+                simulated_piece = copy_piece.simulatedPiece() #simulating the piece again, in order to correctly iterate
                                                                 #through each column without error
                 #for each column, these two lines ensure that the piece starts from the top of the board in the next column
-                simulated_piece.column = column
-                simulated_piece.row = 0
-                if simulated_board.isValid(simulated_piece) == True: #if the movement is valid...
+                simulated_piece.x = column
+                simulated_piece.y = 0
+                if self.isValid(simulated_piece) == True: #if the movement is valid...
                     full_lines = simulated_board.dropPiece(simulated_piece) #drop the piece and return the amount of full lines
                     #append all of these four factors into boardPlacements, which will then be examined as required by the GBFS algorithm
                     boardPlacements.append((simulated_board,full_lines,column,rotation))

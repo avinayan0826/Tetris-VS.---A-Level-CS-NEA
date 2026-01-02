@@ -140,7 +140,7 @@ class GameManager:
     def lockOpPiece(self):
         blocks = self.opponentPiece.getOccupiedCells()
         for block in blocks:
-            self.gameBoard.board[block.row][block.column] = self.opponentPiece.shape  #storing the corresponding values of the tetrimino
+            self.opponentBoard.board[block.row][block.column] = self.opponentPiece.shape  #storing the corresponding values of the tetrimino
                                                                                      #into the grid
         numberCleared = self.opponentBoard.clearAllFull()
         self.score.lineClearScore(numberCleared, (
