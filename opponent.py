@@ -22,22 +22,20 @@ class Opponent():
             -0.95 * simulated_board.fullLines()
         )
 
-    def isValid(self,piece): #checks that a move is valid, using the logic from gameboard functions
-        simulated_board = self.board_state.simulatedBoard() #using the simulated board when simulating moves
-        for piece in piece.getOccupiedCells(): #checks each individual tile in the tetrimino
-            if (simulated_board.checkBoundary(piece.row, piece.column) == False or
-                simulated_board.checkOccupiedCells(piece.row, piece.column) == False):
+    def isValid(self,piece, board): #checks that a move is valid, using the logic from gameboard functions
+        for block in piece.getOccupiedCells(): #checks each individual tile in the tetrimino
+            if (board.checkBoundary(block.row, block.column) == False or
+                board.checkOccupiedCells(block.row, block.column) == False):
                 return False #rejects move immediately if one tile is out of bounds
         return True #accepts as valid move
 
-    def dropPiece(self, piece):
-        simulated_board = self.board_state.simulatedBoard()
-        while self.isValid(piece) == True:
+    def dropPiece(self, simulated_board, piece):
+        while self.isValid(piece, simulated_board) == True:
             piece.offset(1,0)
         piece.offset(-1,0) #doesn't allow the piece to go beyond the board
-        for piece in piece.getOccupiedCells():
-            self.board_state[piece.row][piece.column] = piece.shape
-        simulated_board.fullLines()
+        for block in piece.getOccupiedCells():
+            simulated_board.board[block.row][block.column] = piece.shape
+        return simulated_board.fullLines()
 
 #this function is responsible for generating all the possible placements for a piece
     def generatePlacements(self, opponentBoard, piece):
@@ -54,15 +52,15 @@ class Opponent():
                 #for each column, these two lines ensure that the piece starts from the top of the board in the next column
                 simulated_piece.x = column
                 simulated_piece.y = 0
-                if self.isValid(simulated_piece) == True: #if the movement is valid...
-                    full_lines = simulated_board.dropPiece(simulated_piece) #drop the piece and return the amount of full lines
+                if self.isValid(simulated_piece, simulated_board) == True: #if the movement is valid...
+                    full_lines = self.dropPiece(simulated_board,simulated_piece) #drop the piece and return the amount of full lines
                     #append all of these four factors into boardPlacements, which will then be examined as required by the GBFS algorithm
                     boardPlacements.append((simulated_board,full_lines,column,rotation))
         return boardPlacements
 
     def GBFS_bestMove(self, opponentBoard, piece):
         start_node = opponentBoard #the start node is the initial state of the opponent board passed in
-        bestHeuristic = 0 #set the initial value to 0, this will be replaced by the lowest heuristic as each move is evaluated
+        bestHeuristic = float("inf") #set the initial value to 0, this will be replaced by the lowest heuristic as each move is evaluated
         bestMove = None #set initially to None, this will be replaced by the best move as each move is evaluated,
                         #and the lowest heuristic is found
         #calls generatePlacements, to find all valid moves for the current board state and piece on the board

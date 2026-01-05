@@ -32,7 +32,9 @@ class Tetrimino():
                                      )
             pygame.draw.rect(screen, self.colour[self.shape],block_rect)
 
-    def offset(self, rows, columns): #this method removes the need to modify and recalculate positions when checking for collisions
+    #this method is responsible for tracking how many rows/columns a piece has to be moved
+    #it also removes the need to modify and recalculate positions when checking for collisions
+    def offset(self, rows, columns):
         self.row_offset += rows
         self.column_offset += columns
 

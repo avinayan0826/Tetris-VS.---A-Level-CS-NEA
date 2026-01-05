@@ -20,8 +20,11 @@ class GameManager:
         self.opponentTargetRot = None
         self.nextQ = [self.genNewPiece() for i in range(3)] #list of 3 pieces in 'next pieces' queue
         self.gameOver = False
+        self.opponentMoveSet = False
+        self.targetAligned = False
         self.score = Score()
         self.AUTOMATIC_FALL = pygame.USEREVENT #avoids circular import
+        self.setOpponentMove()
 
 
     def genNewPiece(self): #randomly chooses a tetrimino to spawn
@@ -125,15 +128,21 @@ class GameManager:
         if bestMove:
             self.opponentTargetCol,self.opponentTargetRot = bestMove
             self.opponentPiece.rotation = self.opponentTargetRot
+            self.opponentMoveSet = True
 
     def moveOpponent(self):
+        if self.setOpponentMove() == False:
+            return None
         if self.opponentTargetCol != None:
             if self.opponentPiece.x < self.opponentTargetCol:
                 self.opponentPiece.offset(0,1)
             elif self.opponentPiece.x > self.opponentTargetCol:
                 self.opponentPiece.offset(0,-1)
-        self.opponentPiece.offset(1, 0)
-        if self.opponent.isValid(self.opponentPiece) == False:
+        if self.targetAligned == False:
+            self.targetAligned = True
+            while self.opponent.isValid(self.opponentPiece, self.opponentBoard):
+                self.opponentPiece.offset(1, 0)
+        if self.opponent.isValid(self.opponentPiece, self.opponentBoard) == False:
             self.opponentPiece.offset(-1,0)
             self.lockOpPiece()
 
@@ -153,6 +162,10 @@ class GameManager:
             self.score.perfectClearScore(numberCleared)
         self.score.comboScore(numberCleared)  # checking for combo score
         self.opponentPiece = self.genNewPiece()
+        self.targetAligned = False
+        self.opponentTargetCol = None
+        self.opponentTargetRot = None
+        self.opponentMoveSet = False
         self.setOpponentMove()
 
 
