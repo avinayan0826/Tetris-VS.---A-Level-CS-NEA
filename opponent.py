@@ -56,6 +56,7 @@ class Opponent():
                     full_lines = self.dropPiece(simulated_board,simulated_piece) #drop the piece and return the amount of full lines
                     #append all of these four factors into boardPlacements, which will then be examined as required by the GBFS algorithm
                     boardPlacements.append((simulated_board,full_lines,column,rotation))
+        print("Best move found!")
         return boardPlacements
 
     def GBFS_bestMove(self, opponentBoard, piece):
@@ -72,6 +73,7 @@ class Opponent():
             if heuristic < bestHeuristic:
                 bestHeuristic = heuristic #the lower the heuristic the better the move - gbfs looks for the lowest heuristic
                 bestMove = (column, rotation) #the move with the lowest heuristic is the best move out of all generated placements
+        print("Best move calculated!")
         return bestMove #return and play the best move
 
 
