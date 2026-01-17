@@ -131,17 +131,18 @@ class GameManager:
             self.opponentMoveSet = True
 
     def moveOpponent(self):
-        if self.setOpponentMove() == False:
-            return None
-        if self.opponentTargetCol != None:
-            if self.opponentPiece.x < self.opponentTargetCol:
-                self.opponentPiece.offset(0,1)
-            elif self.opponentPiece.x > self.opponentTargetCol:
-                self.opponentPiece.offset(0,-1)
-        if self.targetAligned == False:
-            self.targetAligned = True
-            while self.opponent.isValid(self.opponentPiece, self.opponentBoard):
-                self.opponentPiece.offset(1, 0)
+        if self.opponentMoveSet == False:
+            return
+        #get the actual current column, and see whether this matches the target
+        currentColumn = self.opponentPiece.x + self.opponentPiece.column_offset
+        if currentColumn < self.opponentTargetCol:
+            self.opponentPiece.offset(0,1)
+            return #don't drop yet, wait for next frame
+        elif currentColumn > self.opponentTargetCol:
+            self.opponentPiece.offset(0,-1)
+            return #don't drop yet, wait for the next frame
+        #only drop once we're at the target column
+        self.opponentPiece.offset(1,0)
         if self.opponent.isValid(self.opponentPiece, self.opponentBoard) == False:
             self.opponentPiece.offset(-1,0)
             self.lockOpPiece()
@@ -167,5 +168,7 @@ class GameManager:
         self.opponentTargetRot = None
         self.opponentMoveSet = False
         self.setOpponentMove()
+        if self.checkCellsManager() == False:
+            self.gameOver = True
 
 

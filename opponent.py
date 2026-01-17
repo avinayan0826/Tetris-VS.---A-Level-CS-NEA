@@ -45,7 +45,7 @@ class Opponent():
         for rotation in range(4):
             copy_piece = piece.simulatedPiece() #creates a simulated piece for each rotation on the simulated board
             copy_piece.rotation = rotation #will loop for each rotation state
-            for column in range(opponentBoard.columns):
+            for column in range(-4, opponentBoard.columns +4):
                 simulated_board = opponentBoard.simulatedBoard() #creating a simulated version of the opponent board
                 simulated_piece = copy_piece.simulatedPiece() #simulating the piece again, in order to correctly iterate
                                                                 #through each column without error

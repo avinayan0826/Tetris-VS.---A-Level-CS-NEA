@@ -55,6 +55,11 @@ class Tetrimino():
     def reverseRotate(self):
         self.rotation = (self.rotation - 1) % 4
 
+    def getWidth(self): #returning the full range of columns that the opponent piece can move to
+        cells = self.occupied_cells[self.rotation]
+        columns = [cell.column for cell in cells]
+        return max(columns) - min(columns)+1
+
 #for simulating a piece for the opponent
     def simulatedPiece(self):
         #building a simulated piece that copies the type of tetrimino, position on the board, rotation and its occupied cells
