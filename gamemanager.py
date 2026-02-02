@@ -130,22 +130,27 @@ class GameManager:
             self.opponentPiece.rotation = self.opponentTargetRot
             self.opponentMoveSet = True
 
+
     def moveOpponent(self):
         if self.opponentMoveSet == False:
             return
         #get the actual current column, and see whether this matches the target
         currentColumn = self.opponentPiece.x + self.opponentPiece.column_offset
         if currentColumn < self.opponentTargetCol:
+            self.opponentPiece.offset(1,0) #automatic fall
             self.opponentPiece.offset(0,1)
             return #don't drop yet, wait for next frame
         elif currentColumn > self.opponentTargetCol:
+            self.opponentPiece.offset(1,0) #automatic fall
             self.opponentPiece.offset(0,-1)
             return #don't drop yet, wait for the next frame
-        #only drop once we're at the target column
-        self.opponentPiece.offset(1,0)
-        if self.opponent.isValid(self.opponentPiece, self.opponentBoard) == False:
+        #only hard drop once we're at the target column, and if the board position is valid
+        while currentColumn == self.opponentTargetCol and self.opponent.isValid(self.opponentPiece, self.opponentBoard) == True:
+            self.opponentPiece.offset(1,0)
+        if self.opponent.isValid(self.opponentPiece, self.opponentBoard) == False: #lock the piece once it reaches the bottom
             self.opponentPiece.offset(-1,0)
             self.lockOpPiece()
+
 
     def lockOpPiece(self):
         blocks = self.opponentPiece.getOccupiedCells()
