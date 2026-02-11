@@ -86,6 +86,7 @@ class GameManager:
             self.gameBoard.board[block.row][block.column] = self.currentPiece.shape #storing the corresponding values of the tetrimino
                                                                                     #into the grid
         numberCleared = self.gameBoard.clearAllFull()
+        self.opponentBoard.garbageLines(numberCleared)
         self.score.lineClearScore(numberCleared,(type(self.currentPiece).__name__)) #checking the number of lines cleared, and whether it is a T piece
         newSpeed = max(100, 700-((self.score.level-1)*50)) #for each level up, speed of automatic fall increases by 50ms
         pygame.time.set_timer(self.AUTOMATIC_FALL,newSpeed) #changes automatic fall to the new speed for each level up
@@ -158,6 +159,7 @@ class GameManager:
             self.opponentBoard.board[block.row][block.column] = self.opponentPiece.shape  #storing the corresponding values of the tetrimino
                                                                                      #into the grid
         numberCleared = self.opponentBoard.clearAllFull()
+        self.gameBoard.garbageLines(numberCleared)
         self.score.lineClearScore(numberCleared, (
             type(self.opponentPiece).__name__))  # checking the number of lines cleared, and whether it is a T piece
         newSpeed = max(100, 700 - (
@@ -175,5 +177,10 @@ class GameManager:
         self.setOpponentMove()
         if self.checkCellsManager() == False:
             self.gameOver = True
+
+
+
+
+
 
 

@@ -1,4 +1,5 @@
 import pygame
+import random
 from pieces import I_Tet,O_Tet,T_Tet,S_Tet,Z_Tet,J_Tet,L_Tet
 
 
@@ -29,8 +30,9 @@ class GameBoard():
         purple = (166, 0, 247)  # 5
         cyan = (21, 204, 209)  # 6
         blue = (13, 64, 216)  # 7
+        garbage = (128, 128, 128) # 8
 
-        return [grey, green, red, orange, yellow, purple, cyan, blue]
+        return [grey, green, red, orange, yellow, purple, cyan, blue, garbage]
 
     def print_board(self):
         for row in range(self.rows):
@@ -58,7 +60,7 @@ class GameBoard():
             return False
 
     def checkOccupiedCells(self,row,column): #returns True if a cell is empty
-        if self.board[row][column] == 0 and self.checkBoundary(row,column) == True:
+        if self.checkBoundary(row,column) == True and self.board[row][column] == 0:
             return True
         else:
             return False
@@ -157,4 +159,13 @@ class GameBoard():
             if self.lineFull(row) == True:
                 full = full + 1
         return full
+
+#garbage line logic
+    def garbageLines(self, linesCleared):
+        for i in range(linesCleared):
+            hole = random.randint(0, self.columns-1) #creates a random hole in the garbage line
+            garbageLine = [8 for i in range(self.columns)] #grey line
+            garbageLine[hole] = 0
+            self.board.pop(0)# removes the top row of the board
+            self.board.append(garbageLine) #adds the garbage line to the bottom of the board
 
