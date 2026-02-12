@@ -119,6 +119,7 @@ class GameManager:
 
     def restart(self):
         self.gameBoard.restart()
+        self.opponentBoard.restart()
         self.pieces = [I_Tet(), O_Tet(), T_Tet(), S_Tet(), Z_Tet(), J_Tet(), L_Tet()]
         self.currentPiece = self.genNewPiece()
         self.nextPiece = self.genNewPiece()
