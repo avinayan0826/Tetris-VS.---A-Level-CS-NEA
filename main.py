@@ -6,6 +6,7 @@ pygame.init()
 
 white = (200,200,200)
 red = (255, 0, 0)
+# the following block creates the titles on the game board
 titleFont = pygame.font.Font(None, 35)
 gameOverFont = pygame.font.Font(None,60)
 scoreSurface = titleFont.render("SCORE",True, white)
@@ -32,10 +33,13 @@ black = (0,0,0)
 AUTOMATIC_FALL = pygame.USEREVENT
 pygame.time.set_timer(AUTOMATIC_FALL,700)
 
+#main game loop
+
 run = True
 while run: # setting up the while loop where the game logic will run
 
     for event in pygame.event.get():
+        gamemanager.gameBoard.print_board()
         if event.type == pygame.QUIT: # creating a way to exit the game loop, avoiding an infinite loop
             run = False
         if event.type == pygame.KEYDOWN:
@@ -56,6 +60,7 @@ while run: # setting up the while loop where the game logic will run
             gamemanager.softDrop()
             gamemanager.moveOpponent()
 
+    # the following block of code allows the changeable titles are shown, and allows them to update during gameplay: level, score and the next queue
     scoreValueSurface = titleFont.render(str(gamemanager.score.score),True,white)
     levelValueSurface = titleFont.render(str(gamemanager.score.level), True, white)
     screen.fill(black)
@@ -67,6 +72,7 @@ while run: # setting up the while loop where the game logic will run
     pygame.draw.rect(screen,(30,30,30), nextinQRect)
     gamemanager.draw(screen)
 
+    #game over screen
     if gamemanager.gameOver == True:
         screen.blit(gameOverSurface, (175, 350, 50, 50))
 

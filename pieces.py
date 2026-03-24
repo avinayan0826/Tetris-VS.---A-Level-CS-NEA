@@ -1,17 +1,21 @@
+#This file contains the subclasses of Tetrimino(), which represent each individual tetrimino.
+#The format of each subclass is identical to each other.
+
 from tetrimino import Tetrimino, Position
 
 class I_Tet(Tetrimino):
     def __init__(self):
-        super().__init__(shape=1)
+        super().__init__(shape=1) #This is the index that corresponds to the tetrimino's colour
+        #This is the dictionary of coordinates for the tetrimino: the key is the rotation state, and the value is the coordinates  of the tetrimino in the specified state
         self.occupied_cells = {
             0:[Position(1,0),Position(1,1),Position(1,2),Position(1,3)],
             1:[Position(0,2),Position(1,2),Position(2,2),Position(3,2)],
             2:[Position(2,0),Position(2,1),Position(2,2),Position(2,3)],
             3:[Position(0,1),Position(1,1),Position(2,1),Position(3,1)],
         }
-#
-#
-#
+
+
+
 class O_Tet(Tetrimino):
     def __init__(self):
         super().__init__(shape=2)
@@ -21,9 +25,9 @@ class O_Tet(Tetrimino):
             2:[Position(0,0), Position(0,1),Position(1,0), Position(1,1)],
             3:[Position(0,0), Position(0,1),Position(1,0), Position(1,1)],
         }
-#
-#
-#
+
+
+
 class T_Tet(Tetrimino):
     def __init__(self):
         super().__init__(shape=3)
@@ -33,9 +37,9 @@ class T_Tet(Tetrimino):
             2:[Position(1,0), Position(1,1),Position(1,2), Position(2,1)],
             3:[Position(0,1), Position(1,0),Position(1,1), Position(2,1)],
         }
-#
-#
-#
+
+
+
 class S_Tet(Tetrimino):
     def __init__(self):
         super().__init__(shape=4)
@@ -45,9 +49,9 @@ class S_Tet(Tetrimino):
             2:[Position(1,1), Position(1,2),Position(2,0), Position(2,1)],
             3:[Position(0,0), Position(1,0),Position(1,1), Position(2,1)],
         }
-#
-#
-#
+
+
+
 class Z_Tet(Tetrimino):
     def __init__(self):
         super().__init__(shape=5)
@@ -57,9 +61,9 @@ class Z_Tet(Tetrimino):
             2:[Position(1,0), Position(1,1),Position(2,1), Position(2,2)],
             3:[Position(0,1), Position(1,0),Position(1,1), Position(2,0)],
         }
-#
-#
-#
+
+
+
 class J_Tet(Tetrimino):
     def __init__(self):
         super().__init__(shape=6)

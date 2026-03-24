@@ -1,3 +1,5 @@
+#This file is needed to import the colours index for the tetrimino pieces into tetrimino.py.
+
 def get_colours():
     # creates a list where the index corresponds to the colour codes below
 
